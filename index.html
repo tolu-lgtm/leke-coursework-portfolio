@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%231f4e8c%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-size=%2728%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27white%27 text-anchor=%27middle%27%3ELO%3C/text%3E%3C/svg%3E">
+<title>Student Coursework Portfolio — Private</title><style>
+:root{--ink:#1a2233;--mut:#8a93a6;--line:#e3e7ee;--acc:#1f4e8c}
+body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+background:#f7f8fa;color:var(--ink);display:flex;min-height:100vh;align-items:center;justify-content:center}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:34px 36px;max-width:420px;width:92%;
+box-shadow:0 8px 30px rgba(20,30,60,.06)}
+h1{font-size:20px;margin:0 0 6px}
+p{color:var(--mut);font-size:14px;margin:0 0 18px}
+input[type=password]{width:100%;padding:11px 12px;font-size:16px;border:1px solid var(--line);border-radius:9px}
+label{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--mut);margin:12px 0}
+button{width:100%;padding:11px;font-size:15.5px;font-weight:600;color:#fff;background:var(--acc);
+border:none;border-radius:9px;cursor:pointer}
+button:disabled{opacity:.6}
+.err{color:#b3261e;font-size:13.5px;min-height:20px;margin:8px 0 0}
+.crest{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;
+background:var(--acc);color:#fff;font-weight:700;margin-bottom:12px}
+</style></head><body>
+<form class="box" id="f">
+<div class="crest">LO</div>
+<h1>Student coursework portfolio</h1>
+<p>This site contains a student's academic records and is password-protected.
+Please enter the password provided to you.</p>
+<input type="password" id="pw" placeholder="Password" autocomplete="current-password" autofocus>
+<label><input type="checkbox" id="rem"> Remember me on this device</label>
+<button id="go">Open portfolio</button>
+<div class="err" id="err"></div>
+</form>
+<script src="crypto.js"></script>
+<script>
+document.getElementById("f").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const btn=document.getElementById("go"), err=document.getElementById("err");
+  btn.disabled=true; btn.textContent="Checking…"; err.textContent="";
+  try{
+    const key = await deriveKey(document.getElementById("pw").value);
+    if(await tryKey(key)){
+      await storeKey(key, document.getElementById("rem").checked);
+      const dest=(location.hash||"#overview").slice(1);
+      location.href = dest + ".html";
+    } else { err.textContent="That password isn't correct."; }
+  }catch(ex){ err.textContent="Something went wrong — please try again."; }
+  btn.disabled=false; btn.textContent="Open portfolio";
+});
+</script></body></html>
