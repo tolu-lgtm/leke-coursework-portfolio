@@ -39,8 +39,11 @@ document.getElementById("f").addEventListener("submit", async (e)=>{
     const key = await deriveKey(document.getElementById("pw").value);
     if(await tryKey(key)){
       await storeKey(key, document.getElementById("rem").checked);
-      const dest=(location.hash||"#overview").slice(1);
-      location.href = dest + ".html";
+      let dest=(location.hash||"#overview").slice(1);
+      if(!dest.includes(".html")) dest += ".html";
+      // only allow same-site relative destinations
+      if(!/^[A-Za-z0-9][A-Za-z0-9.?=&_-]*$/.test(dest) || dest.includes("//") || dest.includes(":")) dest="overview.html";
+      location.href = dest;
     } else { err.textContent="That password isn't correct."; }
   }catch(ex){ err.textContent="Something went wrong — please try again."; }
   btn.disabled=false; btn.textContent="Open portfolio";
