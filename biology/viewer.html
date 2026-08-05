@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%231f4e8c%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-size=%2728%27 font-family=%27sans-serif%27 font-weight=%27700%27 fill=%27white%27 text-anchor=%27middle%27%3ELO%3C/text%3E%3C/svg%3E">
+<title>Document — Leke Odumosu, Coursework Portfolio</title><style>
+body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#40444b;
+display:flex;flex-direction:column;height:100vh}
+.bar{background:#1f2430;color:#e8eaf0;display:flex;align-items:center;gap:14px;padding:10px 16px;font-size:14px}
+.bar a{color:#9db8e0;text-decoration:none;font-weight:600}
+.bar .t{margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+iframe{border:0;flex:1;width:100%;background:#fff}
+.msg{color:#e8eaf0;text-align:center;margin-top:40vh}
+</style></head><body data-root="../">
+<div class="bar"><span class="t" id="t">Decrypting document…</span>
+<a href="#" id="dl" download>Download</a><a href="overview.html">Back to subject</a><a href="../home.html">All subjects</a></div>
+<iframe id="fr" title="document"></iframe>
+<script src="../crypto.js"></script>
+<script>
+(async ()=>{
+  const p = new URLSearchParams(location.search);
+  const f = (p.get("f")||"").replace(/[^a-z0-9-]/g,"");
+  const key = await keyFromStore();
+  if(!key || !(await tryKey(key))){ const sec=location.pathname.split("/").slice(-2,-1)[0]; location.replace("../index.html#"+sec+"/viewer.html"+location.search); return; }
+  try{
+    const r = await fetch("pdfs/"+f+".pdf.enc", {cache:"force-cache"});
+    if(!r.ok) throw new Error("missing");
+    const pt = await decryptBuf(key, await r.arrayBuffer());
+    const blob = new Blob([pt], {type:"application/pdf"});
+    const url = URL.createObjectURL(blob);
+    document.getElementById("fr").src = url;
+    const dl = document.getElementById("dl");
+    dl.href = url; dl.download = f + ".pdf";
+    document.getElementById("t").textContent = f + ".pdf";
+  }catch(e){
+    document.body.innerHTML = '<p class="msg">Could not load this document.</p>';
+  }
+})();
+</script></body></html>
