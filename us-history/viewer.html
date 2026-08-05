@@ -10,17 +10,17 @@ display:flex;flex-direction:column;height:100vh}
 .bar .t{margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 iframe{border:0;flex:1;width:100%;background:#fff}
 .msg{color:#e8eaf0;text-align:center;margin-top:40vh}
-</style></head><body>
+</style></head><body data-root="../">
 <div class="bar"><span class="t" id="t">Decrypting document…</span>
-<a href="#" id="dl" download>Download</a><a href="overview.html">Back to portfolio</a></div>
+<a href="#" id="dl" download>Download</a><a href="overview.html">Back to subject</a><a href="../home.html">All subjects</a></div>
 <iframe id="fr" title="document"></iframe>
-<script src="crypto.js"></script>
+<script src="../crypto.js"></script>
 <script>
 (async ()=>{
   const p = new URLSearchParams(location.search);
   const f = (p.get("f")||"").replace(/[^a-z0-9-]/g,"");
   const key = await keyFromStore();
-  if(!key || !(await tryKey(key))){ location.replace("index.html#viewer.html" + location.search); return; }
+  if(!key || !(await tryKey(key))){ location.replace("../index.html#us-history/viewer.html" + encodeURIComponent(location.search).replace(/%3F/gi,"?").replace(/%3D/gi,"=")); return; }
   try{
     const r = await fetch("pdfs/"+f+".pdf.enc", {cache:"force-cache"});
     if(!r.ok) throw new Error("missing");

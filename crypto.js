@@ -1,6 +1,7 @@
 
 const PBKDF2_ITER = 310000;
 const SALT = Uint8Array.from(atob("dzMUtM0dpCGvaH6HGrAGwQ=="), c => c.charCodeAt(0));
+function siteRoot(){ return (document.body && document.body.dataset.root) || ""; }
 
 async function deriveKey(password){
   const enc = new TextEncoder();
@@ -29,7 +30,7 @@ async function decryptBuf(key, buf){
 }
 async function tryKey(key){
   try{
-    const r = await fetch("check.enc", {cache:"no-store"});
+    const r = await fetch(siteRoot() + "check.enc", {cache:"no-store"});
     const pt = await decryptBuf(key, await r.arrayBuffer());
     return new TextDecoder().decode(pt) === "portfolio-ok";
   }catch(e){ return false; }
@@ -39,7 +40,8 @@ async function portfolioBoot(){
   const key = await keyFromStore();
   if(!key || !(await tryKey(key))){
     sessionStorage.removeItem("pk"); localStorage.removeItem("pk");
-    location.replace("index.html#" + page); return;
+    const dest = document.body.dataset.dest || (page + ".html");
+    location.replace(siteRoot() + "index.html#" + dest); return;
   }
   const r = await fetch("pages/" + page + ".enc", {cache:"no-store"});
   const pt = await decryptBuf(key, await r.arrayBuffer());
